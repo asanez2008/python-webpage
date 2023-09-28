@@ -1,1 +1,85 @@
+"""This part of the code handles the routing of the home page
+and pages that doesn't require login authentications. """
+import json
+from flask import Blueprint, render_template, request, flash, jsonify, redirect
+from flask_login import login_required, current_user
+from sqlalchemy.exc import IntegrityError
+from webfolder import db
+from webfolder.model import Blog
+
+
+views = Blueprint('view', __name__)
+
+
+@views.route('/', methods=['GET', 'POST'])
+@login_required
+def home():
+    """This is route for the homepage"""
+    return render_template("home.html", user=current_user)
+
+
+@views.route('/page2', methods=['GET', 'POST'])
+@login_required
+def page2():
+    """This is the route for page 2 ,and it allows the user to
+    write on the page"""
+    if request.method == 'POST':
+        blog = request.form.get('blog')
+        if len(blog) < 1:
+            flash('Too short.')
+        else:
+            new_blog = Blog(data=blog, user_id=current_user.id)
+            db.session.add(new_blog)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+            flash('Note added.', category='success')
+    return render_template("page2.html", user=current_user)
+
+
+@views.route('/delete-note', methods=['POST'])
+def delete_blog():
+    """This is the function that allows the user to delete
+     what they wrote on the page"""
+    blog = json.loads(request.data)
+    blog_id = blog['blogId']
+    blog = Blog.query.get(blog_id)
+    if blog:
+        if blog.user_id == current_user.id:
+            db.session.delete(blog)
+            db.session.commit()
+    return jsonify({})
+
+
+@views.route("/page1")
+def page1():
+    """This function contains a table and shows 4 types
+    of games, the website links associated with it, and image files
+    of each games"""
+    return render_template("table.html", user=current_user)
+
+
+@views.route("/page3")
+def website_genshin():
+    """This function redirects the user to the genshin impact website"""
+    return redirect("https://genshin.hoyoverse.com/en")
+
+
+@views.route("/page4")
+def website_game():
+    """This function redirects the user to the touhou lostword website"""
+    return redirect("https://global.touhoulostword.com/")
+
+
+@views.route("/page5")
+def website_fortress():
+    """This function redirects the user to the teamfortress 2 website"""
+    return redirect("https://www.teamfortress.com/index.php")
+
+
+@views.route("/page6")
+def website_slug():
+    """This function redirects the user to the metal slug website"""
+    return redirect ("https://game.snk-corp.co.jp/official/metalslug_sp/english/")
 
