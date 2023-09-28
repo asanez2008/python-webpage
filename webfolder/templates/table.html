@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title%}Logout {% endblock %}
+{% block content %}
+
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+<table>
+  <tr>
+    <th>Games</th>
+    <th>Official Website</th>
+    <th>Game Image</th>
+  </tr>
+  <tr>
+    <td>Genshin Impact</td>
+    <td><a href={{url_for("view.website_genshin")}}>Genshin Impact</a></td>
+    <td><img src="{{ url_for('static',filename='genshin.jpg') }}" width="399" height="399"></td>
+  </tr>
+  <tr>
+    <td>Team Fortress 2</td>
+    <td><a href={{url_for("view.website_fortress")}}>Team Fortress 2</a></td>
+    <td><img src="{{ url_for('static',filename='team.jfif') }}" width="399" height="399"></td>
+  </tr>
+  <tr>
+    <td>Touhou LostWord</td>
+    <td><a href={{url_for("view.website_game")}}>Touhou LostWord</a></td>
+    <td><img src="{{ url_for('static',filename='touhou.jfif') }}" width="399" height="399"></td>
+  </tr>
+  <tr>
+    <td>Metal Slug</td>
+    <td><a href={{url_for("view.website_slug")}}>Metal Slug</a></td>
+    <td><img src="{{ url_for('static',filename='metal.jfif') }}" width="399" height="399"></td>
+  </tr>
+</table>
+
+{% endblock %}
